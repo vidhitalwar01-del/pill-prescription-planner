@@ -2,15 +2,20 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, LogOut, Activity } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import MedicationGrid from "@/components/MedicationGrid";
+import StatisticsCard from "@/components/StatisticsCard";
+import AdherenceChart from "@/components/AdherenceChart";
+import EmailReminderSettings from "@/components/EmailReminderSettings";
+import { format, subDays } from "date-fns";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [medications, setMedications] = useState<any[]>([]);
+  const [logs, setLogs] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -36,6 +41,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (user) {
       loadMedications();
+      loadLogs();
     }
   }, [user]);
 
@@ -60,6 +66,34 @@ const Dashboard = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadLogs = async () => {
+    if (!user) return;
+
+    const startDate = format(subDays(new Date(), 30), "yyyy-MM-dd");
+    const endDate = format(new Date(), "yyyy-MM-dd");
+
+    try {
+      const { data, error } = await supabase
+        .from("medication_logs")
+        .select("*")
+        .eq("user_id", user.id)
+        .gte("log_date", startDate)
+        .lte("log_date", endDate);
+
+      if (error) throw error;
+
+      const logsMap: Record<string, boolean> = {};
+      data?.forEach((log) => {
+        const key = `${log.medication_id}-${log.log_date}`;
+        logsMap[key] = log.taken;
+      });
+
+      setLogs(logsMap);
+    } catch (error: any) {
+      console.error("Error loading logs:", error);
     }
   };
 
@@ -101,7 +135,6 @@ const Dashboard = () => {
           </Button>
         </div>
 
-        {/* Medication Grid */}
         {loading ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground">Loading your medications...</p>
@@ -119,8 +152,26 @@ const Dashboard = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            <MedicationGrid medications={medications} userId={user?.id || ""} />
+          <div className="space-y-8">
+            {/* Statistics Cards */}
+            <div className="animate-fade-in" style={{ animationDelay: "0.2s" }}>
+              <StatisticsCard medications={medications} logs={logs} />
+            </div>
+
+            {/* Charts */}
+            <div className="animate-fade-in" style={{ animationDelay: "0.3s" }}>
+              <AdherenceChart medications={medications} logs={logs} />
+            </div>
+
+            {/* Email Reminder Settings */}
+            <div className="animate-fade-in" style={{ animationDelay: "0.4s" }}>
+              <EmailReminderSettings userEmail={user?.email || ""} />
+            </div>
+
+            {/* Medication Grid */}
+            <div className="animate-fade-in" style={{ animationDelay: "0.5s" }}>
+              <MedicationGrid medications={medications} userId={user?.id || ""} />
+            </div>
           </div>
         )}
       </div>
