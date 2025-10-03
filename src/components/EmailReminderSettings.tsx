@@ -30,10 +30,10 @@ const EmailReminderSettings = ({ userEmail }: EmailReminderSettingsProps) => {
   };
 
   return (
-    <Card className="animate-scale-in">
+    <Card className="animate-scale-in shadow-strong border-border/50 backdrop-blur-sm bg-card/95 hover:shadow-glow transition-all">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <div className="p-2 rounded-lg bg-primary/10">
+          <div className="p-2 rounded-lg bg-primary/20 shadow-glow">
             <Mail className="h-4 w-4 text-primary" />
           </div>
           Email Reminders
@@ -72,7 +72,7 @@ const EmailReminderSettings = ({ userEmail }: EmailReminderSettingsProps) => {
           </div>
         )}
 
-        <Button onClick={handleSave} className="w-full">
+        <Button onClick={handleSave} className="w-full shadow-glow hover:shadow-glow hover:scale-105 transition-all">
           <Bell className="mr-2 h-4 w-4" />
           Save Settings
         </Button>

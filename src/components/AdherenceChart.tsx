@@ -62,7 +62,7 @@ const AdherenceChart = ({ medications, logs }: AdherenceChartProps) => {
   return (
     <div className="grid md:grid-cols-2 gap-6">
       {/* Bar Chart - Daily Adherence */}
-      <Card className="animate-fade-in">
+      <Card className="animate-fade-in shadow-strong border-border/50 backdrop-blur-sm bg-card/95 hover:shadow-glow transition-all">
         <CardHeader>
           <CardTitle>Daily Progress</CardTitle>
           <CardDescription>Last 14 days medication adherence</CardDescription>
@@ -85,7 +85,7 @@ const AdherenceChart = ({ medications, logs }: AdherenceChartProps) => {
       </Card>
 
       {/* Line Chart - Adherence Trend */}
-      <Card className="animate-fade-in" style={{ animationDelay: "0.1s" }}>
+      <Card className="animate-fade-in shadow-strong border-border/50 backdrop-blur-sm bg-card/95 hover:shadow-glow transition-all" style={{ animationDelay: "0.1s" }}>
         <CardHeader>
           <CardTitle>Adherence Trend</CardTitle>
           <CardDescription>Your wellness consistency over time</CardDescription>

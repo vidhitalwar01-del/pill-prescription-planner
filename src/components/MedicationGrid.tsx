@@ -96,7 +96,7 @@ const MedicationGrid = ({ medications, userId }: MedicationGridProps) => {
   };
 
   return (
-    <Card className="shadow-xl overflow-x-auto">
+    <Card className="shadow-strong border-border/50 backdrop-blur-sm bg-card/95 overflow-x-auto hover:shadow-glow transition-all">
       <CardHeader>
         <CardTitle>Medication Tracker</CardTitle>
       </CardHeader>
@@ -141,12 +141,12 @@ const MedicationGrid = ({ medications, userId }: MedicationGridProps) => {
                     size="sm"
                     onClick={() => toggleLog(med.id, day)}
                     disabled={isFuture}
-                    className={`h-10 w-full transition-all ${
-                      isTaken ? "bg-accent hover:bg-accent/80" : ""
-                    } ${isToday ? "ring-2 ring-primary" : ""}`}
+                    className={`h-10 w-full transition-all hover:scale-105 ${
+                      isTaken ? "bg-accent hover:bg-accent/80 shadow-glow" : ""
+                    } ${isToday ? "ring-2 ring-primary shadow-glow" : ""}`}
                   >
                     {isTaken ? (
-                      <Check className="h-4 w-4" />
+                      <Check className="h-4 w-4 animate-scale-in" />
                     ) : isFuture ? (
                       <X className="h-4 w-4 text-muted-foreground" />
                     ) : (

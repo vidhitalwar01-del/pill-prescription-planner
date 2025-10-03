@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,11 +7,15 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { ClipboardPlus, Loader2, ArrowLeft } from "lucide-react";
+import { ClipboardPlus, Loader2, ArrowLeft, Edit } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { User } from "@supabase/supabase-js";
 
 const AddMedication = () => {
+  const [searchParams] = useSearchParams();
+  const medicationId = searchParams.get("id");
+  const isEditMode = !!medicationId;
+  
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -42,6 +46,44 @@ const AddMedication = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  useEffect(() => {
+    if (isEditMode && medicationId && user) {
+      loadMedication();
+    }
+  }, [isEditMode, medicationId, user]);
+
+  const loadMedication = async () => {
+    if (!medicationId) return;
+    
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("medications")
+        .select("*")
+        .eq("id", medicationId)
+        .single();
+
+      if (error) throw error;
+
+      setFormData({
+        name: data.name,
+        dosage: data.dosage,
+        frequency: data.frequency,
+        timeSlots: data.time_slots || ["09:00"],
+        notes: data.notes || "",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+      navigate("/dashboard");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -49,21 +91,41 @@ const AddMedication = () => {
     setLoading(true);
 
     try {
-      const { error } = await supabase.from("medications").insert({
-        user_id: user.id,
-        name: formData.name,
-        dosage: formData.dosage,
-        frequency: formData.frequency,
-        time_slots: formData.timeSlots,
-        notes: formData.notes,
-      });
+      if (isEditMode && medicationId) {
+        const { error } = await supabase
+          .from("medications")
+          .update({
+            name: formData.name,
+            dosage: formData.dosage,
+            frequency: formData.frequency,
+            time_slots: formData.timeSlots,
+            notes: formData.notes,
+          })
+          .eq("id", medicationId);
 
-      if (error) throw error;
+        if (error) throw error;
 
-      toast({
-        title: "Medication added!",
-        description: "Your medication has been added successfully.",
-      });
+        toast({
+          title: "Medication updated!",
+          description: "Your medication has been updated successfully.",
+        });
+      } else {
+        const { error } = await supabase.from("medications").insert({
+          user_id: user.id,
+          name: formData.name,
+          dosage: formData.dosage,
+          frequency: formData.frequency,
+          time_slots: formData.timeSlots,
+          notes: formData.notes,
+        });
+
+        if (error) throw error;
+
+        toast({
+          title: "Medication added!",
+          description: "Your medication has been added successfully.",
+        });
+      }
 
       navigate("/dashboard");
     } catch (error: any) {
@@ -93,24 +155,29 @@ const AddMedication = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/20 p-4">
-      <div className="container mx-auto max-w-2xl py-8">
+    <div className="min-h-screen bg-background p-4 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-glow opacity-30 pointer-events-none"></div>
+      <div className="container mx-auto max-w-2xl py-8 relative z-10">
         <Button
           variant="ghost"
           onClick={() => navigate("/dashboard")}
-          className="mb-6"
+          className="mb-6 hover:scale-105 transition-transform"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Dashboard
         </Button>
 
-        <Card className="shadow-xl animate-scale-in">
+        <Card className="shadow-strong border-border/50 backdrop-blur-sm bg-card/95 animate-scale-in">
           <CardHeader className="space-y-4 text-center">
-            <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <ClipboardPlus className="w-8 h-8 text-primary-foreground" />
+            <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-glow">
+              {isEditMode ? (
+                <Edit className="w-8 h-8 text-primary-foreground" />
+              ) : (
+                <ClipboardPlus className="w-8 h-8 text-primary-foreground" />
+              )}
             </div>
-            <CardTitle className="text-3xl">New Prescription</CardTitle>
-            <CardDescription>Enter your medication details below</CardDescription>
+            <CardTitle className="text-3xl">{isEditMode ? "Edit Medication" : "New Prescription"}</CardTitle>
+            <CardDescription>{isEditMode ? "Update your medication details" : "Enter your medication details below"}</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -205,14 +272,14 @@ const AddMedication = () => {
                 />
               </div>
 
-              <Button type="submit" className="w-full" disabled={loading}>
+              <Button type="submit" className="w-full shadow-glow hover:shadow-glow hover:scale-105 transition-all" disabled={loading}>
                 {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Adding...
+                    {isEditMode ? "Updating..." : "Adding..."}
                   </>
                 ) : (
-                  "Add Medication"
+                  isEditMode ? "Update Medication" : "Add Medication"
                 )}
               </Button>
             </form>

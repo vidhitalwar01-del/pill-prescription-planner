@@ -2,3 +2,6 @@ project_id = "tiaxqvzthwnqgcpmttob"
 
 [functions.send-medication-reminder]
 verify_jwt = false
+
+[functions.medication-chatbot]
+verify_jwt = false

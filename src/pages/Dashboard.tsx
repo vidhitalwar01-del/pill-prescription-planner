@@ -4,12 +4,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, LogOut, Activity } from "lucide-react";
+import { Plus, LogOut, Activity, Edit, Trash2 } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import MedicationGrid from "@/components/MedicationGrid";
 import StatisticsCard from "@/components/StatisticsCard";
 import AdherenceChart from "@/components/AdherenceChart";
 import EmailReminderSettings from "@/components/EmailReminderSettings";
+import MedicationChatbot from "@/components/MedicationChatbot";
 import { format, subDays } from "date-fns";
 
 const Dashboard = () => {
@@ -102,34 +103,66 @@ const Dashboard = () => {
     navigate("/");
   };
 
+  const handleDeleteMedication = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from("medications")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Medication deleted",
+        description: "Your medication has been removed.",
+      });
+
+      loadMedications();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/20">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-glow opacity-20 pointer-events-none"></div>
+      
       {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+      <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-20 shadow-medium">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-glow animate-pulse">
               <Activity className="w-5 h-5 text-primary-foreground" />
             </div>
-            <h1 className="text-2xl font-bold">MediTrack</h1>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">MediTrack</h1>
           </div>
-          <Button variant="ghost" onClick={handleSignOut}>
+          <Button variant="ghost" onClick={handleSignOut} className="hover:scale-105 transition-transform">
             <LogOut className="mr-2 h-4 w-4" />
             Sign Out
           </Button>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 relative z-10">
         {/* Welcome Section */}
         <div className="mb-8 animate-fade-in">
-          <h2 className="text-3xl font-bold mb-2">Welcome back!</h2>
-          <p className="text-muted-foreground">Track your medications and stay healthy</p>
+          <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary via-accent to-primary-glow bg-clip-text text-transparent">
+            Welcome back!
+          </h2>
+          <p className="text-muted-foreground text-lg">Track your medications and stay healthy</p>
         </div>
 
         {/* Add Medication Button */}
         <div className="mb-8 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-          <Button onClick={() => navigate("/add-medication")} size="lg">
+          <Button 
+            onClick={() => navigate("/add-medication")} 
+            size="lg"
+            className="shadow-glow hover:shadow-glow hover:scale-105 transition-all"
+          >
             <Plus className="mr-2 h-5 w-5" />
             Add Medication
           </Button>
@@ -140,12 +173,15 @@ const Dashboard = () => {
             <p className="text-muted-foreground">Loading your medications...</p>
           </div>
         ) : medications.length === 0 ? (
-          <Card className="animate-scale-in">
+          <Card className="animate-scale-in shadow-strong border-border/50 backdrop-blur-sm bg-card/95">
             <CardContent className="py-12 text-center">
               <p className="text-muted-foreground mb-4">
                 No medications added yet. Start tracking your wellness journey!
               </p>
-              <Button onClick={() => navigate("/add-medication")}>
+              <Button 
+                onClick={() => navigate("/add-medication")}
+                className="shadow-glow hover:shadow-glow hover:scale-105 transition-all"
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Your First Medication
               </Button>
@@ -153,6 +189,54 @@ const Dashboard = () => {
           </Card>
         ) : (
           <div className="space-y-8">
+            {/* Medications List with Edit/Delete */}
+            <div className="animate-fade-in" style={{ animationDelay: "0.15s" }}>
+              <Card className="shadow-strong border-border/50 backdrop-blur-sm bg-card/95">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold mb-4">Your Medications</h3>
+                  <div className="space-y-3">
+                    {medications.map((med, idx) => (
+                      <div
+                        key={med.id}
+                        className="flex items-center justify-between p-4 rounded-lg bg-secondary/50 border border-border/30 hover:border-primary/50 transition-all hover:scale-[1.02] animate-slide-in"
+                        style={{ animationDelay: `${idx * 0.05}s` }}
+                      >
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-lg">{med.name}</h4>
+                          <p className="text-sm text-muted-foreground">
+                            {med.dosage} • {med.frequency}
+                          </p>
+                          {med.time_slots && med.time_slots.length > 0 && (
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Times: {med.time_slots.join(", ")}
+                            </p>
+                          )}
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => navigate(`/add-medication?id=${med.id}`)}
+                            className="hover:scale-110 transition-transform"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => handleDeleteMedication(med.id)}
+                            className="hover:scale-110 transition-transform hover:border-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
             {/* Statistics Cards */}
             <div className="animate-fade-in" style={{ animationDelay: "0.2s" }}>
               <StatisticsCard medications={medications} logs={logs} />
@@ -175,6 +259,9 @@ const Dashboard = () => {
           </div>
         )}
       </div>
+
+      {/* Chatbot */}
+      {medications.length > 0 && <MedicationChatbot medications={medications} />}
     </div>
   );
 };

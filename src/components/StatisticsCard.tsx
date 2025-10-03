@@ -80,31 +80,31 @@ const StatisticsCard = ({ medications, logs }: StatisticsCardProps) => {
   return (
     <div className="grid md:grid-cols-3 gap-4">
       {/* Current Streak */}
-      <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20 animate-scale-in">
+      <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/50 shadow-glow animate-scale-in backdrop-blur-sm hover:scale-105 transition-transform">
         <CardHeader className="pb-3">
           <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <Flame className="h-4 w-4 text-primary" />
+            <div className="p-2 rounded-lg bg-primary/20 shadow-glow">
+              <Flame className="h-4 w-4 text-primary animate-pulse" />
             </div>
             Current Streak
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-baseline gap-2">
-            <span className="text-4xl font-bold text-primary">{streak}</span>
+            <span className="text-4xl font-bold text-primary animate-fade-in">{streak}</span>
             <span className="text-muted-foreground">days</span>
           </div>
           <p className="text-xs text-muted-foreground mt-2">
-            {streak > 0 ? "Keep it up!" : "Start your streak today!"}
+            {streak > 0 ? "Keep it up! 🔥" : "Start your streak today!"}
           </p>
         </CardContent>
       </Card>
 
       {/* Adherence Rate */}
-      <Card className="bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20 animate-scale-in" style={{ animationDelay: "0.1s" }}>
+      <Card className="bg-gradient-to-br from-accent/10 to-accent/5 border-accent/50 shadow-glow animate-scale-in backdrop-blur-sm hover:scale-105 transition-transform" style={{ animationDelay: "0.1s" }}>
         <CardHeader className="pb-3">
           <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-accent/10">
+            <div className="p-2 rounded-lg bg-accent/20 shadow-glow">
               <TrendingUp className="h-4 w-4 text-accent" />
             </div>
             30-Day Adherence
@@ -112,11 +112,11 @@ const StatisticsCard = ({ medications, logs }: StatisticsCardProps) => {
         </CardHeader>
         <CardContent>
           <div className="flex items-baseline gap-2">
-            <span className="text-4xl font-bold text-accent">{adherence}%</span>
+            <span className="text-4xl font-bold text-accent animate-fade-in">{adherence}%</span>
           </div>
-          <div className="w-full bg-muted rounded-full h-2 mt-3">
+          <div className="w-full bg-muted rounded-full h-2 mt-3 overflow-hidden">
             <div
-              className="bg-gradient-to-r from-accent to-primary h-2 rounded-full transition-all duration-500"
+              className="bg-gradient-to-r from-accent to-primary h-2 rounded-full transition-all duration-1000 shadow-glow"
               style={{ width: `${adherence}%` }}
             />
           </div>
@@ -124,10 +124,10 @@ const StatisticsCard = ({ medications, logs }: StatisticsCardProps) => {
       </Card>
 
       {/* Total Medications */}
-      <Card className="bg-gradient-to-br from-primary-glow/10 to-primary-glow/5 border-primary-glow/20 animate-scale-in" style={{ animationDelay: "0.2s" }}>
+      <Card className="bg-gradient-to-br from-primary-glow/10 to-primary-glow/5 border-primary-glow/50 shadow-glow animate-scale-in backdrop-blur-sm hover:scale-105 transition-transform" style={{ animationDelay: "0.2s" }}>
         <CardHeader className="pb-3">
           <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-primary-glow/10">
+            <div className="p-2 rounded-lg bg-primary-glow/20 shadow-glow">
               <Target className="h-4 w-4 text-primary" />
             </div>
             Active Medications
@@ -135,11 +135,11 @@ const StatisticsCard = ({ medications, logs }: StatisticsCardProps) => {
         </CardHeader>
         <CardContent>
           <div className="flex items-baseline gap-2">
-            <span className="text-4xl font-bold">{medications.length}</span>
+            <span className="text-4xl font-bold animate-fade-in">{medications.length}</span>
             <span className="text-muted-foreground">meds</span>
           </div>
           <p className="text-xs text-muted-foreground mt-2">
-            {medications.length > 0 ? "Tracking your wellness" : "Add your first medication"}
+            {medications.length > 0 ? "Tracking your wellness 💊" : "Add your first medication"}
           </p>
         </CardContent>
       </Card>
