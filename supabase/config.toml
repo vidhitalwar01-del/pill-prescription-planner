@@ -5,3 +5,9 @@ verify_jwt = false
 
 [functions.medication-chatbot]
 verify_jwt = false
+
+[functions.weekly-guardian-report]
+verify_jwt = false
+
+[functions.smart-reminder]
+verify_jwt = false

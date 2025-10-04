@@ -97,6 +97,101 @@ export type Database = {
         }
         Relationships: []
       }
+      user_settings: {
+        Row: {
+          created_at: string
+          guardian_email: string | null
+          id: string
+          med_coins: number | null
+          theme: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          guardian_email?: string | null
+          id?: string
+          med_coins?: number | null
+          theme?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          guardian_email?: string | null
+          id?: string
+          med_coins?: number | null
+          theme?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_wellness_completions: {
+        Row: {
+          coins_earned: number | null
+          completed_date: string
+          created_at: string
+          goal_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          coins_earned?: number | null
+          completed_date?: string
+          created_at?: string
+          goal_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          coins_earned?: number | null
+          completed_date?: string
+          created_at?: string
+          goal_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_wellness_completions_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "wellness_goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wellness_goals: {
+        Row: {
+          coin_reward: number | null
+          created_at: string
+          description: string | null
+          goal_type: string
+          icon: string | null
+          id: string
+          title: string
+        }
+        Insert: {
+          coin_reward?: number | null
+          created_at?: string
+          description?: string | null
+          goal_type: string
+          icon?: string | null
+          id?: string
+          title: string
+        }
+        Update: {
+          coin_reward?: number | null
+          created_at?: string
+          description?: string | null
+          goal_type?: string
+          icon?: string | null
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

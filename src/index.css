@@ -8,53 +8,55 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 5%;
-    --foreground: 142 76% 73%;
+    /* Light Mode */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
 
-    --card: 0 0% 8%;
-    --card-foreground: 142 76% 73%;
+    --card: 0 0% 98%;
+    --card-foreground: 0 0% 10%;
 
-    --popover: 0 0% 8%;
-    --popover-foreground: 142 76% 73%;
+    --popover: 0 0% 98%;
+    --popover-foreground: 0 0% 10%;
 
-    --primary: 142 76% 36%;
-    --primary-foreground: 0 0% 5%;
+    --primary: 210 100% 50%;
+    --primary-foreground: 0 0% 100%;
     
-    --primary-glow: 142 76% 55%;
+    --primary-glow: 210 100% 65%;
 
-    --secondary: 0 0% 12%;
-    --secondary-foreground: 142 76% 73%;
+    --secondary: 210 15% 92%;
+    --secondary-foreground: 0 0% 10%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 142 20% 60%;
+    --muted: 210 15% 95%;
+    --muted-foreground: 0 0% 40%;
 
-    --accent: 142 76% 45%;
-    --accent-foreground: 0 0% 5%;
+    --accent: 210 100% 55%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 142 76% 45%;
+    --border: 210 15% 88%;
+    --input: 210 15% 88%;
+    --ring: 210 100% 50%;
 
     --radius: 0.75rem;
     
-    --gradient-primary: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 55%));
-    --gradient-accent: linear-gradient(135deg, hsl(142 76% 45%), hsl(142 76% 60%));
-    --gradient-soft: linear-gradient(180deg, hsl(0 0% 5%), hsl(0 0% 8%));
-    --gradient-glow: radial-gradient(circle at 50% 50%, hsl(142 76% 36% / 0.15), transparent 60%);
+    --gradient-primary: linear-gradient(135deg, hsl(210 100% 50%), hsl(210 100% 65%));
+    --gradient-accent: linear-gradient(135deg, hsl(210 100% 55%), hsl(210 100% 70%));
+    --gradient-soft: linear-gradient(180deg, hsl(0 0% 100%), hsl(0 0% 98%));
+    --gradient-glow: radial-gradient(circle at 50% 50%, hsl(210 100% 50% / 0.1), transparent 60%);
     
-    --shadow-soft: 0 2px 8px -2px hsl(0 0% 0% / 0.4);
-    --shadow-medium: 0 4px 16px -4px hsl(0 0% 0% / 0.5);
-    --shadow-strong: 0 8px 24px -6px hsl(0 0% 0% / 0.6);
-    --shadow-glow: 0 0 30px hsl(142 76% 45% / 0.3);
+    --shadow-soft: 0 2px 8px -2px hsl(0 0% 0% / 0.08);
+    --shadow-medium: 0 4px 16px -4px hsl(0 0% 0% / 0.12);
+    --shadow-strong: 0 8px 24px -6px hsl(0 0% 0% / 0.16);
+    --shadow-glow: 0 0 30px hsl(210 100% 50% / 0.2);
     
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 
   .dark {
+    /* Dark Mode with animated green glow */
     --background: 0 0% 5%;
     --foreground: 142 76% 73%;
 

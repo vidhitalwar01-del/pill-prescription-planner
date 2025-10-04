@@ -4,13 +4,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, LogOut, Activity, Edit, Trash2 } from "lucide-react";
+import { Plus, LogOut, Activity, Edit, Trash2, Pill } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import MedicationGrid from "@/components/MedicationGrid";
 import StatisticsCard from "@/components/StatisticsCard";
 import AdherenceChart from "@/components/AdherenceChart";
 import EmailReminderSettings from "@/components/EmailReminderSettings";
 import MedicationChatbot from "@/components/MedicationChatbot";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { WellnessGoals } from "@/components/WellnessGoals";
+import { MedCoinsDisplay } from "@/components/MedCoinsDisplay";
 import { format, subDays } from "date-fns";
 
 const Dashboard = () => {
@@ -18,6 +21,7 @@ const Dashboard = () => {
   const [medications, setMedications] = useState<any[]>([]);
   const [logs, setLogs] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
+  const [coinsRefresh, setCoinsRefresh] = useState(0);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -136,14 +140,17 @@ const Dashboard = () => {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-glow animate-pulse">
-              <Activity className="w-5 h-5 text-primary-foreground" />
+              <Pill className="w-5 h-5 text-primary-foreground" />
             </div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">MediTrack</h1>
           </div>
-          <Button variant="ghost" onClick={handleSignOut} className="hover:scale-105 transition-transform">
-            <LogOut className="mr-2 h-4 w-4" />
-            Sign Out
-          </Button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Button variant="ghost" onClick={handleSignOut} className="hover:scale-105 transition-transform">
+              <LogOut className="mr-2 h-4 w-4" />
+              Sign Out
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -189,8 +196,21 @@ const Dashboard = () => {
           </Card>
         ) : (
           <div className="space-y-8">
-            {/* Medications List with Edit/Delete */}
+            {/* MedCoins Display */}
+            <div className="animate-fade-in" style={{ animationDelay: "0.1s" }}>
+              <MedCoinsDisplay userId={user.id} refreshTrigger={coinsRefresh} />
+            </div>
+
+            {/* Wellness Goals */}
             <div className="animate-fade-in" style={{ animationDelay: "0.15s" }}>
+              <WellnessGoals 
+                userId={user.id} 
+                onCoinsUpdate={() => setCoinsRefresh(prev => prev + 1)}
+              />
+            </div>
+
+            {/* Medications List with Edit/Delete */}
+            <div className="animate-fade-in" style={{ animationDelay: "0.2s" }}>
               <Card className="shadow-strong border-border/50 backdrop-blur-sm bg-card/95">
                 <CardContent className="p-6">
                   <h3 className="text-xl font-bold mb-4">Your Medications</h3>
@@ -238,7 +258,7 @@ const Dashboard = () => {
             </div>
 
             {/* Statistics Cards */}
-            <div className="animate-fade-in" style={{ animationDelay: "0.2s" }}>
+            <div className="animate-fade-in" style={{ animationDelay: "0.25s" }}>
               <StatisticsCard medications={medications} logs={logs} />
             </div>
 
@@ -248,12 +268,12 @@ const Dashboard = () => {
             </div>
 
             {/* Email Reminder Settings */}
-            <div className="animate-fade-in" style={{ animationDelay: "0.4s" }}>
-              <EmailReminderSettings userEmail={user?.email || ""} />
+            <div className="animate-fade-in" style={{ animationDelay: "0.35s" }}>
+              <EmailReminderSettings userEmail={user?.email || ""} userId={user.id} />
             </div>
 
             {/* Medication Grid */}
-            <div className="animate-fade-in" style={{ animationDelay: "0.5s" }}>
+            <div className="animate-fade-in" style={{ animationDelay: "0.4s" }}>
               <MedicationGrid medications={medications} userId={user?.id || ""} />
             </div>
           </div>
