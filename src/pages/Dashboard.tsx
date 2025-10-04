@@ -15,6 +15,9 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { WellnessGoals } from "@/components/WellnessGoals";
 import { MedCoinsDisplay } from "@/components/MedCoinsDisplay";
 import { format, subDays } from "date-fns";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
+import GoogleCalendarSync from "@/components/GoogleCalendarSync";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -136,25 +139,35 @@ const Dashboard = () => {
       <div className="absolute inset-0 bg-gradient-glow opacity-20 pointer-events-none"></div>
       
       {/* Header */}
-      <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-20 shadow-medium">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-glow animate-pulse">
-              <Pill className="w-5 h-5 text-primary-foreground" />
+      <header className="border-b border-border/50 bg-card/80 backdrop-blur-md sticky top-0 z-20 shadow-medium" role="banner">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-vibrant flex items-center justify-center shadow-glow animate-pulse">
+                <Pill className="w-5 h-5 text-primary-foreground" aria-hidden="true" />
+              </div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-accent to-primary-glow bg-clip-text text-transparent">
+                MediTrack
+              </h1>
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">MediTrack</h1>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <Button 
+                variant="ghost" 
+                onClick={handleSignOut} 
+                className="hover:scale-105 transition-transform focus:ring-2 focus:ring-ring"
+                aria-label="Sign out of your account"
+              >
+                <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
+                Sign Out
+              </Button>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <Button variant="ghost" onClick={handleSignOut} className="hover:scale-105 transition-transform">
-              <LogOut className="mr-2 h-4 w-4" />
-              Sign Out
-            </Button>
-          </div>
+          <Navigation />
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8 relative z-10">
+      <main className="container mx-auto px-4 py-8 relative z-10">
         {/* Welcome Section */}
         <div className="mb-8 animate-fade-in">
           <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary via-accent to-primary-glow bg-clip-text text-transparent">
@@ -276,12 +289,20 @@ const Dashboard = () => {
             <div className="animate-fade-in" style={{ animationDelay: "0.4s" }}>
               <MedicationGrid medications={medications} userId={user?.id || ""} />
             </div>
+
+            {/* Google Calendar Sync */}
+            <div className="animate-fade-in" style={{ animationDelay: "0.45s" }}>
+              <GoogleCalendarSync medications={medications} />
+            </div>
           </div>
         )}
-      </div>
+      </main>
 
       {/* Chatbot */}
       {medications.length > 0 && <MedicationChatbot medications={medications} />}
+      
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
