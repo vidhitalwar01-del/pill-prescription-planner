@@ -215,7 +215,7 @@ const Dashboard = () => {
             </div>
 
             {/* Wellness Goals */}
-            <div className="animate-fade-in" style={{ animationDelay: "0.15s" }}>
+            <div id="wellness" className="animate-fade-in scroll-mt-24" style={{ animationDelay: "0.15s" }}>
               <WellnessGoals 
                 userId={user.id} 
                 onCoinsUpdate={() => setCoinsRefresh(prev => prev + 1)}
@@ -271,7 +271,7 @@ const Dashboard = () => {
             </div>
 
             {/* Statistics Cards */}
-            <div className="animate-fade-in" style={{ animationDelay: "0.25s" }}>
+            <div id="statistics" className="animate-fade-in scroll-mt-24" style={{ animationDelay: "0.25s" }}>
               <StatisticsCard medications={medications} logs={logs} />
             </div>
 
@@ -281,7 +281,7 @@ const Dashboard = () => {
             </div>
 
             {/* Email Reminder Settings */}
-            <div className="animate-fade-in" style={{ animationDelay: "0.35s" }}>
+            <div id="email-settings" className="animate-fade-in scroll-mt-24" style={{ animationDelay: "0.35s" }}>
               <EmailReminderSettings userEmail={user?.email || ""} userId={user.id} />
             </div>
 
@@ -291,7 +291,7 @@ const Dashboard = () => {
             </div>
 
             {/* Google Calendar Sync */}
-            <div className="animate-fade-in" style={{ animationDelay: "0.45s" }}>
+            <div id="calendar-sync" className="animate-fade-in scroll-mt-24" style={{ animationDelay: "0.45s" }}>
               <GoogleCalendarSync medications={medications} />
             </div>
           </div>
